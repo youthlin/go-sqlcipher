@@ -40,14 +40,14 @@ func main() {
 	if encrypted { // 已加密
 		params := []string{
 			fmt.Sprintf(`_pragma_key=%q`, key),
-            // 注意顺序 _pragma_key 最先；注意引号
+			// 注意顺序 _pragma_key 最先；注意引号
 			`_pragma_cipher_page_size=1024`,
 			`_pragma_kdf_iter=4000`,
 			`_pragma_cipher_hmac_algorithm="HMAC_SHA1"`,
 			`_pragma_cipher_kdf_algorithm="PBKDF2_HMAC_SHA1"`,
 			`_pragma_cipher_use_hmac="OFF"`,
 		}
-        // 带参数打开加密数据库
+		// 带参数打开加密数据库
 		dsn = fmt.Sprintf("%s?%s", dsn, strings.Join(params, "&"))
 	}
 	db, err = sql.Open("sqlite3", dsn)
@@ -68,11 +68,11 @@ func main() {
 - See also [PRAGMA key](https://www.zetetic.net/sqlcipher/sqlcipher-api/#PRAGMA_key)
 - 文档 https://pkg.go.dev/github.com/youthlin/go-sqlcipher
 - 可以使用 `sqlite3.IsEncrypted()` 判断一个数据库文件是否已加密。
-- `./_example` 目录下有更多示例用法。
+- `_example` 目录下有更多示例用法。
 
 ### Maintenance 从上游更新
 
-参加 [Maintenance](MAINTENANCE) 文件.
+参见 [Maintenance](MAINTENANCE) 文件.
 
 ### License
 
