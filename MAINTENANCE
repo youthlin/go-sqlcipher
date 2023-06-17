@@ -1,3 +1,4 @@
+维护指南
 To maintain this code properly, the following three repositories have to be
 tracked for changes (maintenance details below):
 
@@ -5,25 +6,35 @@ tracked for changes (maintenance details below):
 - https://github.com/sqlcipher/sqlcipher
 - https://github.com/libtom/libtomcrypt
 
+这三个仓库是本项目的上游。
 
 Update code from https://github.com/mattn/go-sqlite3
 ----------------------------------------------------
 
-Current release: v1.14.5
+Current release: v1.14.17
 
-Use ./track_go-sqlite3.sh
+In go-sqlite3 dir: 在该仓库路径下执行命令，签出最新 tag
+git checkout v1.14.17
 
+In this dir: 在本项目路径下执行脚本，将上游项目文件拷贝过来
+Use ./track_go-sqlite3.sh path-to-go-sqlite3
+拷贝后，`sqlite3.go` 会被覆盖，可参照 diff 修改。
 
 Update code from https://github.com/sqlcipher/sqlcipher
 -------------------------------------------------------
 
-Current release: v4.4.2
+Current release: v4.5.4
 
-Execute:
+Execute: 在该项目路径下执行
+git checkout v4.5.4
 ./configure
 make
 
-Track files:
+> Note:
+> on macOS, if you see `Library crypto not found` when execute `./configure`;
+> See `brew info openssl` (ref: https://stackoverflow.com/a/60925481).
+
+Track files: 然后将这两个文件拷贝出来
 sqlite3.h
 sqlite3.c
 
@@ -31,7 +42,9 @@ sqlite3.c
 Update code from https://github.com/libtom/libtomcrypt
 ------------------------------------------------------
 
-Current HEAD: cfbd7f8d364e1438555ff2a247f7e17add11840e
-(from develop branch, 2020-08-29)
+Current HEAD: fae62af0ab16f469c2512ec04575dd60ca018657
+(from develop branch, 2023-05-31)
 
-Use ./track_libtomcrypt.sh
+在本项目路径下执行脚本，将文件拷贝过来
+Use ./track_libtomcrypt.sh path-to-libtomcrypt
+执行后可能需要修改 `aes.c` 文件，让他 include `aes_tab.h` 而不是 `aes_tab.c`（否则 cgo 编译会有问题）

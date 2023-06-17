@@ -45,7 +45,8 @@ typedef struct Rsa_key {
 } rsa_key;
 
 int rsa_make_key(prng_state *prng, int wprng, int size, long e, rsa_key *key);
-
+int rsa_make_key_ubin_e(prng_state *prng, int wprng, int size,
+                        const unsigned char *e, unsigned long elen, rsa_key *key);
 int rsa_get_size(const rsa_key *key);
 
 int rsa_exptmod(const unsigned char *in,   unsigned long inlen,
@@ -354,13 +355,31 @@ int ed25519_import_pkcs8(const unsigned char *in, unsigned long inlen,
                                   const void *pwd, unsigned long pwdlen,
                               curve25519_key *key);
 
-int ed25519_sign(const unsigned char  *msg, unsigned long msglen,
-                       unsigned char  *sig, unsigned long *siglen,
+int ed25519_sign(const  unsigned char *msg, unsigned long msglen,
+                        unsigned char *sig, unsigned long *siglen,
                  const curve25519_key *private_key);
-
+int ed25519ctx_sign(const  unsigned char *msg, unsigned long  msglen,
+                           unsigned char *sig, unsigned long *siglen,
+                    const  unsigned char *ctx, unsigned long  ctxlen,
+                    const curve25519_key *private_key);
+int ed25519ph_sign(const  unsigned char *msg, unsigned long  msglen,
+                          unsigned char *sig, unsigned long *siglen,
+                   const  unsigned char *ctx, unsigned long  ctxlen,
+                   const curve25519_key *private_key);
 int ed25519_verify(const  unsigned char *msg, unsigned long msglen,
                    const  unsigned char *sig, unsigned long siglen,
-                   int *stat, const curve25519_key *public_key);
+                                    int *stat,
+                   const curve25519_key *public_key);
+int ed25519ctx_verify(const  unsigned char *msg, unsigned long msglen,
+                      const  unsigned char *sig, unsigned long siglen,
+                      const  unsigned char *ctx, unsigned long ctxlen,
+                                       int *stat,
+                      const curve25519_key *public_key);
+int ed25519ph_verify(const  unsigned char *msg, unsigned long msglen,
+                     const  unsigned char *sig, unsigned long siglen,
+                     const  unsigned char *ctx, unsigned long ctxlen,
+                                      int *stat,
+                     const curve25519_key *public_key);
 
 /** X25519 Key-Exchange API */
 int x25519_make_key(prng_state *prng, int wprng, curve25519_key *key);
@@ -384,11 +403,14 @@ int x25519_shared_secret(const curve25519_key *private_key,
 
 #ifdef LTC_MDSA
 
-/* Max diff between group and modulus size in bytes */
-#define LTC_MDSA_DELTA     512
+/* Max diff between group and modulus size in bytes (max case: L=8192bits, N=256bits) */
+#define LTC_MDSA_DELTA 992
 
-/* Max DSA group size in bytes (default allows 4k-bit groups) */
-#define LTC_MDSA_MAX_GROUP 512
+/* Max DSA group size in bytes */
+#define LTC_MDSA_MAX_GROUP 64
+
+/* Max DSA modulus size in bytes (the actual DSA size, max 8192 bits) */
+#define LTC_MDSA_MAX_MODULUS 1024
 
 /** DSA key structure */
 typedef struct {
@@ -632,8 +654,8 @@ int der_encode_setof(const ltc_asn1_list *list, unsigned long inlen,
                      unsigned char *out,        unsigned long *outlen);
 
 /* VA list handy helpers with triplets of <type, size, data> */
-int der_encode_sequence_multi(unsigned char *out, unsigned long *outlen, ...);
-int der_decode_sequence_multi(const unsigned char *in, unsigned long inlen, ...);
+int der_encode_sequence_multi(unsigned char *out, unsigned long *outlen, ...) LTC_NULL_TERMINATED;
+int der_decode_sequence_multi(const unsigned char *in, unsigned long inlen, ...) LTC_NULL_TERMINATED;
 
 /* FLEXI DECODER handle unknown list decoder */
 int  der_decode_sequence_flexi(const unsigned char *in, unsigned long *inlen, ltc_asn1_list **out);
