@@ -33,7 +33,7 @@ func main() {
 		dsn = "EnMicroMsg.db"
 		key  = "xxxXxxx"// 密码
 	)
-    encrypted, err := sqlite3.IsEncrypted(dsn)
+	encrypted, err := sqlite3.IsEncrypted(dsn)
 	if err != nil {
 		panic(err) // 文件不存在or空文件
 	}

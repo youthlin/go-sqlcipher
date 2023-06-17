@@ -14,9 +14,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	sqlite3 "github.com/youthlin/go-sqlcipher"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	sqlite3 "github.com/youthlin/go-sqlcipher"
 )
 
 var (
