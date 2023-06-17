@@ -7,10 +7,16 @@ import (
 	"strings"
 )
 
+// ExecFun is a wrap of sqlite3_exec.
 type ExecFun func(string) error
 
+// OnOpenHookFun is the type of the SQLiteDriver's OnOpenHook field.
+// The function will be invoked once open a database.
 type OnOpenHookFun func(dsn string, exec ExecFun) error
 
+// SimpleOpenHook is a simple OnOpenHook,
+// which accept any `_pragma_xxx=yyy` params,
+// and pass the `PRAGMA xxx=yyy` to `sqlite3_exec` once open.
 func SimpleOpenHook(dsn string, exec ExecFun) error {
 	pos := strings.IndexRune(dsn, '?')
 	if pos < 1 {
@@ -27,7 +33,6 @@ func SimpleOpenHook(dsn string, exec ExecFun) error {
 		if strings.HasPrefix(key, "_pragma_") {
 			key = strings.TrimPrefix(key, "_pragma_")
 			cmd := fmt.Sprintf("PRAGMA %s = %s;", key, value)
-			// fmt.Println(cmd) // print for debug
 			err := exec(cmd)
 			if err != nil {
 				return err

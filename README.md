@@ -1,17 +1,17 @@
 ## go-sqlcipher
 
 ### Description 简介
-Fork from https://github.com/mutecomm/go-sqlcipher
+Fork from [mutecomm/go-sqlcipher](mutecomm/go-sqlcipher)
 
-本项目基于以下仓库：
-- Go sqlite3 driver: https://github.com/mattn/go-sqlite3
-- SQLite extension with AES-256 codec: https://github.com/sqlcipher/sqlcipher
-- AES-256 implementation from: https://github.com/libtom/libtomcrypt
+与之区别
+* 更新了上游代码的版本
+* 支持了任意的 `_pragma_xxx` 参数
+* 致谢：本仓库参考了 [yifengyou/go-sqlcipher](https://github.com/yifengyou/go-sqlcipher) fork 版本的改动
 
 ### Installation 安装
-
-    go get github.com/youthlin/go-sqlcipher
-
+```
+go get github.com/youthlin/go-sqlcipher
+```
 
 ### Documentation 文档
 
@@ -62,13 +62,12 @@ func main() {
 	}
 	fmt.Printf("table count = %d\n", count)
 }
-
 ```
 
 - See also [PRAGMA key](https://www.zetetic.net/sqlcipher/sqlcipher-api/#PRAGMA_key)
 - 文档 https://pkg.go.dev/github.com/youthlin/go-sqlcipher
 - 可以使用 `sqlite3.IsEncrypted()` 判断一个数据库文件是否已加密。
-- `_example` 目录下有更多示例用法。
+- `_example` 目录下有更多示例用法（来自上游项目）。
 
 ### Maintenance 从上游更新
 

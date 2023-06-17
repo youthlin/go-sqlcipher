@@ -1,4 +1,6 @@
 维护指南
+-------
+
 To maintain this code properly, the following three repositories have to be
 tracked for changes (maintenance details below):
 
@@ -48,3 +50,38 @@ Current HEAD: fae62af0ab16f469c2512ec04575dd60ca018657
 在本项目路径下执行脚本，将文件拷贝过来
 Use ./track_libtomcrypt.sh path-to-libtomcrypt
 执行后可能需要修改 `aes.c` 文件，让他 include `aes_tab.h` 而不是 `aes_tab.c`（否则 cgo 编译会有问题）
+
+与原 mutecomm/go-sqlcipher 仓库的不同之处
+--------------------------------------
+
+- sqlite3_open_hook.go [new file 新增的文件]
+- sqlite3.go
+```go
+func init() {
+	if driverName != "" {
+		sql.Register(driverName, &SQLiteDriver{
+			OnOpenHook: SimpleOpenHook, // diff to go-sqlite3
+		})
+	}
+}
+
+type SQLiteDriver struct {
+	OnOpenHook  OnOpenHookFun // diff to go-sqlite3
+	Extensions  []string
+	ConnectHook func(*SQLiteConn) error
+}
+
+func (d *SQLiteDriver) Open(dsn string) (driver.Conn, error) {
+    // ...
+	var oDSN = dsn // diff to go-sqlite3
+    // ...
+	if d.OnOpenHook != nil { // diff to go-sqlite3
+		if err := d.OnOpenHook(oDSN, exec); err != nil {
+			return nil, err
+		}
+	}
+    // ...
+}
+```
+
+文件中有 `// diff to go-sqlite3` 注释
